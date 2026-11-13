@@ -13,10 +13,12 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - uses: android-actions/setup-android@v3
-
-      - name: sdk components
-        run: sdkmanager --install "platforms;android-35" "build-tools;35.0.0"
+      # 不用 setup-android：它默认装的 tools 包在当前 SDK 仓库里已不存在
+      - name: android sdk components
+        run: |
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager --install "platforms;android-35" "build-tools;35.0.0" "platform-tools"
 
       - name: gradle assembleDebug
         working-directory: pet-clients/android
